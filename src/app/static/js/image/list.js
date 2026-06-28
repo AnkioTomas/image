@@ -5,13 +5,6 @@ window.pageLoadFiles = [
     "/components/fileUpload/FileUploader.js"
 ];
 window.pageOnLoad = function (loading) {
-    function formatSize(bytes) {
-        if (bytes === 0) return '0 B';
-        const k = 1024;
-        const sizes = ['B', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return (bytes / Math.pow(k, i)).toFixed(1) + ' ' + sizes[i];
-    }
 
     let cardView = new CardView('#cardView');
     cardView.load({
@@ -29,10 +22,20 @@ window.pageOnLoad = function (loading) {
         columns: [
             {
                 field: 'size',
-                formatter: function (value) {
-                    return formatSize(value);
+                formatter: function (bytes) {
+                    if (bytes === 0) return '0 B';
+                    const k = 1024;
+                    const sizes = ['B', 'KB', 'MB', 'GB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return (bytes / Math.pow(k, i)).toFixed(1) + ' ' + sizes[i];
                 },
             },
+            {
+                field:'create_time',
+                formatter:function (value) {
+                    return $.formatDateTime(new Date(value*1000))
+                }
+            }
         ],
         cardWidth: '180px',
         selectable: false,
@@ -44,7 +47,7 @@ window.pageOnLoad = function (loading) {
         .on('click', '.action-copy', function () {
             let index = $(this).closest('.card-view-item').data('index');
             let row = cardView.getRow(index);
-            let url = location.origin + row.url;
+            let url = location.origin + "/i/" + row.hash;
             $.copy(url);
             $.toaster.success('已复制外链');
         })
