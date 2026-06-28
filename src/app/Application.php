@@ -20,8 +20,8 @@ class Application extends App
 
         Route::getInstance()
             ->get('/', route('manager', 'main', 'index'))
-
             ->get('/i/{hash}', route('index', 'serve', 'image'))
+            ->post('/api/upload', route('index', 'serve', 'upload'))
         ;
 
     }

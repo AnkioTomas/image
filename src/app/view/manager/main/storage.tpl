@@ -12,25 +12,15 @@
         <div class="col-xs12">
             <form id="form" autocomplete="off">
                 <div class="row col-space16">
-                    <div class="col-xs12">
-                        <mdui-select
-                            label="存储类型"
-                            name="type"
-                            variant="outlined"
-                            id="storageType"
-                        >
-                            <mdui-menu-item value="local">本地存储</mdui-menu-item>
-                            <mdui-menu-item value="webdav">WebDAV</mdui-menu-item>
-                        </mdui-select>
-                    </div>
 
-                    <div class="col-xs12" id="webdavTip" style="display:none;">
-                        <mdui-card variant="outlined" class="p-4">
-                            <p>WebDAV 连接参数请前往
-                                <a href="/webdav/config" data-pjax-item>WebDAV 配置</a>
-                                页面设置。
-                            </p>
-                        </mdui-card>
+                    <div class="col-xs12">
+                        <mdui-text-field
+                            label="API Token"
+                            name="token"
+                            variant="outlined"
+                            id="apiToken"
+                            helper="用于外部上传接口鉴权，留空则禁用 API 上传"
+                        ></mdui-text-field>
                     </div>
 
                     <div class="col-xs12">
