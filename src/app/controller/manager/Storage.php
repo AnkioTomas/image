@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\controller\manager;
 
+use app\database\dao\TokenDao;
 use nova\framework\http\Response;
 use nova\plugin\login\controller\BaseAPIController;
 
@@ -16,23 +17,21 @@ class Storage extends BaseAPIController
     {
         if ($this->request->isGet()) {
 
-            $token = config('token');
-            if(empty($token)){
+            $tokenModel = TokenDao::getInstance()->getByUid($this->userModel->id);
+            if(empty($tokenModel) || empty($tokenModel->token)){
                 $token = uuid();
-                config('token', $token);
+                $tokenModel = TokenDao::getInstance()->setByUid($this->userModel->id, $token);
             }
 
             return Response::asJson([
                 'code' => 200,
-                'data' => [
-                    'token' => $token,
-                ],
+                'data' => $tokenModel,
             ]);
         }
 
 
         $token = $this->request->post('token', '');
-        config('token', $token);
+        TokenDao::getInstance()->setByUid($this->userModel->id, $token);
 
         return Response::asJson(['code' => 200, 'msg' => '保存成功']);
     }

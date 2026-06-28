@@ -5,12 +5,16 @@ declare(strict_types=1);
 namespace app\controller\index;
 
 use app\database\dao\ImageDao;
+use app\database\dao\TokenDao;
 use app\database\model\ImageModel;
 use app\storage\StorageFactory;
+use nova\framework\core\Logger;
 use nova\framework\http\Response;
+use nova\framework\http\UploadModel;
 use nova\framework\route\Controller;
 
 use function nova\framework\config;
+use function nova\framework\dump;
 
 class Serve extends Controller
 {
@@ -29,21 +33,38 @@ class Serve extends Controller
 
     public function upload(): Response
     {
-        $token = config('token') ?: '';
-        if ($token === '') {
-            return Response::asJson(['code' => 403, 'msg' => 'API 上传未启用']);
-        }
 
         $auth  = $this->request->get('auth','');
         if(empty($auth)){
             $auth = $this->request->getHeaderValue('Authorization', '');
         }
 
-        if (!hash_equals($auth, $token)) {
+        $tokenModel = TokenDao::getInstance()->getByToken($auth);
+
+
+        if (empty($tokenModel) || !hash_equals($auth, $tokenModel->token)) {
             return Response::asJson(['code' => 401, 'msg' => 'Token 无效']);
         }
 
         $file = $this->request->file('file');
+
+        if (empty($file)) {
+            $tmp = tempnam(sys_get_temp_dir(), '');
+            $json = $this->request->json();
+            if(is_array($json)){
+                file_put_contents($tmp, base64_decode($json['file']));
+                $file = new UploadModel();
+                $file->tmp_name = $tmp;
+                $file->name = "temp.png";
+                $file->error = UPLOAD_ERR_OK;
+                $file->size = filesize($tmp);
+            }else{
+                return Response::asJson(['code' => 400, 'msg' => '未收到文件']);
+            }
+
+
+        }
+
         if ($file === null || $file->error !== UPLOAD_ERR_OK) {
             return Response::asJson(['code' => 400, 'msg' => '未收到文件']);
         }
@@ -61,7 +82,7 @@ class Serve extends Controller
             return Response::asJson([
                 'code' => 200,
                 'msg' => '文件已存在',
-                'data' => ['url' => $this->request->getBasicAddress() . '/i/' . $fileHash],
+                'data' =>  $this->request->getBasicAddress() . '/i/' . $fileHash,
             ]);
         }
 
@@ -70,19 +91,19 @@ class Serve extends Controller
 
         $model = new ImageModel();
         $model->name = $file->name;
-        $model->user_id = 0;
+        $model->user_id = $tokenModel->user_id;
         $model->size = $file->size;
         $model->create_time = time();
         $model->hash = $fileHash;
         $model->storage_path = $storagePath;
-        $model->storage_type = config('storage.type') ?: 'local';
+        $model->storage_type = 'webdav';
 
         ImageDao::getInstance()->insertModel($model, true);
 
         return Response::asJson([
             'code' => 200,
             'msg' => '上传成功',
-            'data' => ['url' => $this->request->getBasicAddress() . '/i/' . $fileHash],
+            'data' =>  $this->request->getBasicAddress() . '/i/' . $fileHash,
         ]);
     }
 }

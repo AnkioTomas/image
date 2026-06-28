@@ -14,7 +14,6 @@ class ImageModel extends Model
     public string $hash = '';
     public string $storage_path = '';
     public string $storage_type = 'local';
-    public string $uri_name = '';
 
     public int $create_time = 0;
     public int $user_id = 0;

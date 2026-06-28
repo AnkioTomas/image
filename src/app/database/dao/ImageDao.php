@@ -9,10 +9,7 @@ use nova\plugin\orm\object\Dao;
 
 class ImageDao extends Dao
 {
-    public function findByUri(string $uriName): ?ImageModel
-    {
-        return $this->find(null, ['uri_name' => $uriName]);
-    }
+
 
     public function findByHash(string $hash): ?ImageModel
     {
