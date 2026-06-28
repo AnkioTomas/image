@@ -2,28 +2,29 @@
 
 declare(strict_types=1);
 
-/*
- * Copyright (c) 2025. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 namespace app;
 
 use nova\framework\App;
+use nova\framework\event\EventManager;
+use nova\framework\route\Route;
+use nova\plugin\login\LoginTpl;
 
-use const ROOT_PATH;
+use function nova\framework\route;
 
 class Application extends App
 {
-
     public function onFrameworkStart(): void
     {
+        $adminRoute = ['manager', 'main'];
+        EventManager::trigger('admin.router', $adminRoute);
+
+        Route::getInstance()
+            ->get('/', route('manager', 'main', 'index'))
+
+            ->get('/i/{hash}', route('index', 'serve', 'image'))
+        ;
 
     }
 
-    public const string SYSTEM_NAME =  "Nova App";
-
+    public const string SYSTEM_NAME = "Ankioの图床";
 }
