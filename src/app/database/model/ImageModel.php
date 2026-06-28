@@ -20,6 +20,6 @@ class ImageModel extends Model
 
     public function getUnique(): array
     {
-        return ['uri_name'];
+        return ['hash'];
     }
 }

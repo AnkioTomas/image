@@ -69,11 +69,6 @@ class Serve extends Controller
             return Response::asJson(['code' => 400, 'msg' => '未收到文件']);
         }
 
-        $ext = strtolower(pathinfo($file->name, PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg', 'tiff'];
-        if (!in_array($ext, $allowed, true)) {
-            return Response::asJson(['code' => 400, 'msg' => '不支持的文件类型']);
-        }
 
         $fileHash = md5_file($file->tmp_name);
 
@@ -87,10 +82,10 @@ class Serve extends Controller
         }
 
         $storage = StorageFactory::create();
-        $storagePath = $storage->store($file->tmp_name, $file->name);
+        $storagePath = $storage->store($file->tmp_name, "$fileHash.png");
 
         $model = new ImageModel();
-        $model->name = $file->name;
+        $model->name = "$fileHash.png";
         $model->user_id = $tokenModel->user_id;
         $model->size = $file->size;
         $model->create_time = time();
@@ -98,7 +93,7 @@ class Serve extends Controller
         $model->storage_path = $storagePath;
         $model->storage_type = 'webdav';
 
-        ImageDao::getInstance()->insertModel($model, true);
+        ImageDao::getInstance()->insertModel($model);
 
         return Response::asJson([
             'code' => 200,

@@ -69,7 +69,7 @@ class Image extends BaseAPIController
         $model->storage_path = $storagePath;
         $model->storage_type = 'webdav';
 
-        ImageDao::getInstance()->insertModel($model, true);
+        ImageDao::getInstance()->insertModel($model);
 
         return Response::asJson([
             'code' => 200,
