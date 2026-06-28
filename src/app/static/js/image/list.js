@@ -1,6 +1,7 @@
 window.pageLoadFiles = [
     'CardView',
     'DialogForm',
+    'ImageViewer',
     "/components/fileUpload/File.js",
     "/components/fileUpload/FileUploader.js"
 ];
