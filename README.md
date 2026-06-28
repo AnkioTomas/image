@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="src/app/static/icons/android-chrome-192x192.png" width="96" alt="Logo">
+</p>
+
 # Ankioの图床
 
 基于 Nova 框架的轻量图床服务，使用 WebDAV 作为存储后端。
