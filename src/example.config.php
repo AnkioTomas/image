@@ -21,9 +21,16 @@ return array (
     'type' => 'mysql',
     'host' => 'localhost',
     'port' => 3306,
-    'username' => 'your_username',
-    'password' => 'your_password',
+    'username' => '',
+    'password' => '',
     'db' => 'image',
     'charset' => 'utf8mb4',
   ),
+  'webdav' => 
+  array (
+    'url' => '',
+    'username' => '',
+    'password' => '',
+  ),
+  'installed' => false,
 );
