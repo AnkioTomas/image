@@ -11,7 +11,7 @@ window.pageOnLoad = function (loading) {
     cardView.load({
         uri: '/manager/image/list',
         template: `
-            <img class="img-card-thumb" src="/i/{{hash}}" data-imagebox="gallery" alt="{{name}}" />
+            <image-loader class="img-card-thumb" src="/i/{{hash}}" data-imagebox="gallery" alt="{{name}}"></image-loader>
             <div class="img-card-info">
                 <div class="img-card-name" title="{{name}}">{{name}}</div>
                 <div class="img-card-meta">{{size}} · {{create_time}}</div>
